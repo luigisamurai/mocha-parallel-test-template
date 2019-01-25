@@ -1,0 +1,38 @@
+{
+  "name": "mocha-parallel-test-template",
+  "version": "1.0.0",
+  "description": "Automation API Tests project with Mocha and Mocha Parallel Test libraries",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "tslint -c tslint.json '**/*.ts'",
+    "build": "rm -rf dist && tsc",
+    "pretest": "npm run lint && npm run build",
+    "test": "mocha-parallel-tests dist/test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/luigisamurai/mocha-parallel-test-template.git"
+  },
+  "keywords": [
+    "mocha-parallel-test",
+    "mocha",
+    "API",
+    "tests"
+  ],
+  "author": "labs.sistemas@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/luigisamurai/mocha-parallel-test-template/issues"
+  },
+  "homepage": "https://github.com/luigisamurai/mocha-parallel-test-template#readme",
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/mocha": "^5.2.5",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mocha-parallel-tests": "^2.0.6-alpha.3",
+    "mocha-parallel-tests-es6": "^2.1.0",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.4"
+  }
+}
