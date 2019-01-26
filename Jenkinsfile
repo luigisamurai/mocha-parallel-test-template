@@ -6,10 +6,10 @@ pipeline {
         }
     }
     stages {
-        environment {
-            NPM_TOKEN = credentials('LABS_NPM_TOKEN')
-        }
         stage('Setup') {
+            environment {
+                NPM_TOKEN = credentials('LABS_NPM_TOKEN')
+            }
             steps {
                 sh "printf '//registry.npmjs.org/:_authToken=${NPM_TOKEN}' > ~/.npmrc"
             }
