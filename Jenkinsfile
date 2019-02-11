@@ -8,14 +8,7 @@ pipeline {
     }
     environment {
         HOME = '.'
-        STATUS_APP = "${httpRequestTo.status}"
-    }
-    parameters {
-        password(
-            name: 'PASSWORD',
-            defaultValue: '',
-            description: 'Enter a password to deploy to production'
-        )
+        DEPLOY = "${httpRequestTo.status}"
     }
     stages {
         stage('Build') { 
@@ -35,10 +28,7 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                 allOf {
-                    environment name: 'STATUS_APP', value: '200'
-                    environment name: 'PASSWORD', value: "${DEPLOY_PWD}"
-                 }
+                environment name: 'DEPLOY', value: '200'
             }
             steps {
                 echo "Deploying .......... ${DEPLOY}"
