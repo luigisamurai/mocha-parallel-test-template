@@ -1,4 +1,4 @@
-def httpRequestTo = httpRequest 'https://www.openenglish.com/'
+def httpRequestTo = httpRequest url: 'https://www.openenglish.com/', validResponseCodes: '200:404'
 
 pipeline {
     agent {
@@ -8,7 +8,14 @@ pipeline {
     }
     environment {
         HOME = '.'
-        DEPLOY = httpRequestTo.status
+        STATUS_APP = "${httpRequestTo.status}"
+    }
+    parameters {
+        password(
+            name: 'PASSWORD',
+            defaultValue: '',
+            description: 'Enter a password to deploy to production'
+        )
     }
     stages {
         stage('Build') { 
@@ -17,9 +24,6 @@ pipeline {
             }
         }
         stage('Check') {
-            def response = httpRequest 'http://localhost:8080/jenkins/api/json?pretty=true'
-        println("Status: "+response.status)
-        println("Content: "+response.content)
             steps {
                 echo "Hello ${params.DEPLOY_TO}"
             }
@@ -31,7 +35,10 @@ pipeline {
         }
         stage('Deploy') {
             when {
-                environment name: 'DEPLOY_TO', value: '200'
+                 allOf {
+                    environment name: 'STATUS_APP', value: '200'
+                    environment name: 'PASSWORD', value: "${DEPLOY_PWD}"
+                 }
             }
             steps {
                 echo "Deploying .......... ${DEPLOY}"
