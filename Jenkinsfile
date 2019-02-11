@@ -1,3 +1,5 @@
+def httpRequestTo = httpRequest url: 'https://www.openenglish.com/', validResponseCodes: '200:404'
+
 pipeline {
     agent {
         docker {
@@ -6,16 +8,30 @@ pipeline {
     }
     environment {
         HOME = '.'
+        DEPLOY = "${httpRequestTo.status}"
     }
     stages {
         stage('Build') { 
             steps {
-                sh 'npm install --unsafe-perm=true --allow-root'
+                sh 'npm install'
             }
         }
-        stage('Test') { 
+        stage('Check') {
+            steps {
+                echo "Hello ${params.DEPLOY_TO}"
+            }
+        }
+        stage('Test') {
             steps {
                 sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            when {
+                environment name: 'DEPLOY', value: '200'
+            }
+            steps {
+                echo "Deploying .......... ${DEPLOY}"
             }
         }
     }
