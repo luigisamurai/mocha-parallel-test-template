@@ -1,4 +1,4 @@
-def response = httpRequest 'https://www.openenglish.com/'
+def httpRequestTo = httpRequest 'https://www.openenglish.com/'
 
 pipeline {
     agent {
@@ -8,7 +8,7 @@ pipeline {
     }
     environment {
         HOME = '.'
-        DEPLOY = response.status
+        DEPLOY = httpRequestTo.status
     }
     stages {
         stage('Build') { 
