@@ -1,3 +1,5 @@
+def response = httpRequest 'https://www.openenglish.com/'
+
 pipeline {
     agent {
         docker {
@@ -6,13 +8,7 @@ pipeline {
     }
     environment {
         HOME = '.'
-    }
-    parameters {
-        string(
-            name: 'DEPLOY_TO',
-            defaultValue: 'Mr Jenkins',
-            description: 'Who should I say hello to?'
-        )
+        DEPLOY = response.status
     }
     stages {
         stage('Build') { 
@@ -21,16 +17,24 @@ pipeline {
             }
         }
         stage('Check') {
-            when {
-                environment name: 'DEPLOY_TO', value: 'production'
-            }
+            def response = httpRequest 'http://localhost:8080/jenkins/api/json?pretty=true'
+        println("Status: "+response.status)
+        println("Content: "+response.content)
             steps {
                 echo "Hello ${params.DEPLOY_TO}"
             }
         }
-        stage('Test') { 
+        stage('Test') {
             steps {
                 sh 'npm test'
+            }
+        }
+        stage('Deploy') {
+            when {
+                environment name: 'DEPLOY_TO', value: '200'
+            }
+            steps {
+                echo "Deploying .......... ${DEPLOY}"
             }
         }
     }
